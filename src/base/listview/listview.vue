@@ -9,7 +9,7 @@
       <li v-for="group in data" :key="group.id" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
-          <li v-for="item in group.items" :key="item.id" class="list-group-item">
+          <li @click="selectItem(item)" v-for="item in group.items" :key="item.id" class="list-group-item">
             <img class="avatar" v-lazy="item.avatar">
             <span class="name">{{item.name}}</span>
           </li>
@@ -80,6 +80,9 @@ export default {
     }
   },
   methods: {
+    selectItem(item) {
+      this.$emit('select', item)
+    },
     onShortcutTouchStart(e) {
       let anchorIndex = getData(e.target, 'index')
       let firstTouch = e.touches[0]
@@ -91,7 +94,7 @@ export default {
       let firstTouch = e.touches[0]
       this.touch.y2 = firstTouch.pageY
       let delta = (this.touch.y2 - this.touch.y1) / ANCHOR_HEIGHT | 0
-      let anchorIndex = parseInt(this.touch.anchorIndex) + delta
+      let anchorIndex = parseInt(this.touch.anchorIndex) + delta // y1,y2的值屏幕顶端为0,手指向下移动数值增加
       this._scrollTo(anchorIndex)
     },
     scroll(pos) {
@@ -113,7 +116,7 @@ export default {
       this.listHeight = []
       const list = this.$refs.listGroup
       let height = 0
-      this.listHeight.push(height)
+      this.listHeight.push(height) // 第一项为0，后面开始累加
       for (let i = 0; i < list.length; i++) {
         let item = list[i]
         height += item.clientHeight
@@ -128,13 +131,14 @@ export default {
       }, 20)
     },
     scrollY(newY) {
+      // 这里的newY初始是0，向下拉为正，向上拉为负
       const listHeight = this.listHeight
       // 当滚动到顶部
       if (newY > 0) {
         this.currentIndex = 0
         return
       }
-      // 在中间部分滚动
+      // 在中间部分滚动，遍历到length-1，因为listHeight的长度比元素个数多一个
       for (let i = 0; i < listHeight.length - 1; i++) {
         let height1 = listHeight[i]
         let height2 = listHeight[i + 1]
@@ -144,7 +148,7 @@ export default {
           return
         }
       }
-      // 当滚动到底部，且-newY大于最后一个元素的上限
+      // 当滚动到底部，且-newY大于最后一个元素的上限，索引跟length的关系再-1所以这里要-2
       this.currentIndex = listHeight.length - 2
     },
     diff(newVal) {
