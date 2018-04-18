@@ -32,7 +32,6 @@ let vendor = (() => {
     ms: 'msTransform',
     standard: 'transform'
   }
-  console.log('hehe')
   for (let key in transformNames) {
     if (elementStyle[transformNames[key]] !== undefined) {
       return key
