@@ -11,6 +11,10 @@
     "build": "node build/build.js",
     "fix": "eslint --fix ."
   },
+  "pre-commit": [
+    "fix",
+    "lint"
+  ],
   "dependencies": {
     "axios": "^0.18.0",
     "babel-runtime": "^6.0.0",
@@ -71,7 +75,8 @@
     "webpack-dev-server": "^2.9.1",
     "webpack-merge": "^4.1.0",
     "stylus": "^0.54.5",
-    "stylus-loader": "^2.1.1"
+    "stylus-loader": "^2.1.1",
+    "compression-webpack-plugin": "^1.1.11"
   },
   "engines": {
     "node": ">= 6.0.0",
